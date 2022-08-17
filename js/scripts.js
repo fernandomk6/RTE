@@ -1,12 +1,12 @@
-// referencias dom
+// referencias dom e variaveis globais
 const formIncluirPessoa = document.querySelector('#incluir-pessoa');
 const pessoasLista = document.querySelector('#pessoas-lista');
 const pessoasJsonTextarea = document.querySelector('#json-pessoas');
-
 const btnGravar = document.querySelector('#gravar');
 const btnLer = document.querySelector('#ler');
 
-let pessoasJSON = JSON.stringify({});
+// json vazio
+let pessoasJSON = JSON.stringify({ pessoas: [] }, null, '\t');
 
 // funções
 const limpaInput = input => {
@@ -158,17 +158,75 @@ const atualizaPessoasJson = () => {
 
 const gravar = () => {
 
-  console.log(pessoasJSON);
-
-  fetch('./php/process/index.php', {
+  fetch('./php/gravar.php', {
     method: 'POST',
     headers: {
       "Content-type": "application/json"
     },
     body: pessoasJSON
   })
+    .then(response => {
+      if (!response.ok) {
+        alert("Ocorreu um erro ao salvar um dados");
+        return;
+      }
+
+      alert("Sucesso");
+    });
+}
+
+const ler = () => {
+
+  fetch('./php/ler.php')
     .then(response => response.json())
-    .then(data => console.log(data));
+    .then(atualizarTela);
+
+}
+
+const atualizarTela = data => {
+  const limpaPessoas = () => {
+    pessoasLista.querySelectorAll("li").forEach(li => li.remove());
+  };
+
+  const preencherTabelas = pessoa => {
+    const nome = pessoa.nome;
+    const table = criarTabela(nome);
+
+    pessoa.filhos.forEach(nomeFilho => {
+
+      const tr = document.createElement('tr');
+
+      const button = document.createElement('button');
+      button.dataset.js = 'remover-filho';
+      const td = document.createElement('td');
+      td.dataset.js = 'filho';
+    
+      tr.appendChild(td)
+        .innerHTML = nomeFilho;
+    
+      tr.appendChild(document.createElement('td'))
+        .appendChild(button)
+        .innerHTML = 'Remover Filho';
+        
+      table.querySelector('tbody')
+        .insertBefore(tr, table.querySelector('tbody').lastElementChild);
+    });
+
+    pessoasLista.insertBefore(document.createElement('li'), pessoasLista.lastElementChild)
+      .appendChild(table);
+  
+  };
+
+  console.log(data);
+
+  if (data.pessoas.length === 0) {
+    pessoasJsonTextarea.value = pessoasJSON;
+  }
+
+  limpaPessoas();
+  data.pessoas.forEach(preencherTabelas);
+  
+  
 }
 
 // eventos
@@ -176,6 +234,7 @@ const gravar = () => {
 formIncluirPessoa.addEventListener('submit', incluirPessoa);
 pessoasLista.addEventListener('click', handlePessoas);
 btnGravar.addEventListener('click', gravar);
+btnLer.addEventListener('click', ler);
 
 
 // obeservador
@@ -196,3 +255,6 @@ observer.observe(pessoasLista, {
   attributeOldValue: true,
   characterDataOldValue: true
 });
+
+// inicia json vazio
+pessoasJsonTextarea.value = pessoasJSON;

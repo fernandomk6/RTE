@@ -9,14 +9,15 @@
   <script src="./js/scripts.js" defer></script>
 </head>
 <body>
-  <section>
+
+  <header>
     <div>
       <button id="gravar">Gravar</button>
       <button id="ler">Ler</button>
     </div>
-  </section>
+  </header>
 
-  <section>
+  <section id="main-form">
     <div>
       <form id="incluir-pessoa">
         <label for="nome">Nome</label>
@@ -26,16 +27,18 @@
     </div>
   </section>
 
-  <section>
-    <div>
+  <main>
+
+    <div id="pessoas-container">
       <h1>Pessoas</h1>
       <ul id="pessoas-lista">
       </ul>
     </div>
-  </section>
 
-  <section>
-    <textarea cols="90" rows="20" id="json-pessoas"></textarea>
-  </section>
+    <article id="json-container">
+      <textarea id="json-pessoas"></textarea>
+    </article>
+
+  </main>
 </body>
 </html>
