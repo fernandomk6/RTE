@@ -1,6 +1,6 @@
-# RTE Teste
+# RTE
 
-Sistema básico onde e possivel cadastrar pessoas e filhos
+Sistema básico onde e possivel cadastrar pessoas e filhos.
 
 - PHP
 - Javascript
